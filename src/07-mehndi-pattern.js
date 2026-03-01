@@ -54,20 +54,77 @@
  */
 export function repeatChar(char, n) {
   // Your code here
+    if (typeof char !== "string" || char.length === 0 || n <= 0) {
+        return "";
+    }
+    return char + repeatChar(char, n - 1);
 }
 
 export function sumNestedArray(arr) {
   // Your code here
+    if (!Array.isArray(arr)) {
+        return 0;
+    }
+    let sum = 0;
+    for (let i = 0; i < arr.length; i++) {
+        if (Array.isArray(arr[i])) {
+            sum += sumNestedArray(arr[i]);
+        } else if (typeof arr[i] === "number") {
+            sum += arr[i];
+        }
+    }
+    return sum;
 }
 
 export function flattenArray(arr) {
   // Your code here
+    if (!Array.isArray(arr)) {
+        return [];
+    }
+    let flattened = [];
+    for (let i = 0; i < arr.length; i++) {
+        if (Array.isArray(arr[i])) {
+            flattened = flattened.concat(flattenArray(arr[i]));
+        } else {
+            flattened.push(arr[i]);
+        }
+    }
+    return flattened;
 }
 
 export function isPalindrome(str) {
   // Your code here
+    if (typeof str !== "string") {
+        return false;
+    }
+    const cleanStr = str.toLowerCase().replace(/[^a-z]/g, "");
+    function checkPalindrome(s, start, end) {
+        if (start >= end) return true;
+        if (s[start] !== s[end]) return false;
+        return checkPalindrome(s, start + 1, end - 1);
+    }
+    return checkPalindrome(cleanStr, 0, cleanStr.length - 1);
 }
 
 export function generatePattern(n) {
   // Your code here
+    if (typeof n !== "number" || n <= 0 || !Number.isInteger(n)) {
+        return [];
+    }
+    function buildPattern(current, max, isAscending) {
+        if (current === 0 && !isAscending) return [];
+        if (current > max && isAscending) {
+            return buildPattern(max, max, false);
+        }
+        const line = repeatChar("*", current);
+        if (isAscending) {
+            if (current === max) {
+                return [line].concat(buildPattern(current - 1, max, false));
+            }
+            return [line].concat(buildPattern(current + 1, max, true));
+        } else {
+            return [line].concat(buildPattern(current - 1, max, false));
+        }
+    }
+    return buildPattern(1, n, true);
 }

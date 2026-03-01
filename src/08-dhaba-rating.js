@@ -38,7 +38,7 @@
  *
  * @example
  *   const highRated = createFilter("rating", ">=", 4);
- *   highRated({ name: "Punjab Dhaba", rating: 4.5 }) // => true
+ *   highRated({ na me: "Punjab Dhaba", rating: 4.5 }) // => true
  *
  *   const byRating = createSorter("rating", "desc");
  *   [{ rating: 3 }, { rating: 5 }].sort(byRating)
@@ -46,16 +46,48 @@
  */
 export function createFilter(field, operator, value) {
   // Your code here
+    switch (operator) {
+        case ">":
+            return obj => obj[field] > value;
+        case "<":
+            return obj => obj[field] < value;
+        case ">=":
+            return obj => obj[field] >= value;
+        case "<=":
+            return obj => obj[field] <= value;
+        case "===":
+            return obj => obj[field] === value;
+        default:
+            return () => false;
+    }
 }
 
 export function createSorter(field, order = "asc") {
   // Your code here
+    return (a, b) => {
+        if (a[field] < b[field]) return order === "asc" ? -1 : 1;
+        if (a[field] > b[field]) return order === "asc" ? 1 : -1;
+        return 0;
+    };
 }
 
 export function createMapper(fields) {
   // Your code here
+    return obj => {
+        const result = {};
+        fields.forEach(field => {
+            if (obj.hasOwnProperty(field)) {
+                result[field] = obj[field];
+            }
+        });
+        return result;
+    };
 }
 
 export function applyOperations(data, ...operations) {
   // Your code here
+    if (!Array.isArray(data)) {
+        return [];
+    }
+    return operations.reduce((acc, op) => op(acc), data);
 }
